@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Link } from "~/shared";
+import { Link } from "~/shared/ui";
 
 export default function Header(): ReactNode {
   return (

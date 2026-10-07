@@ -10,6 +10,7 @@ import {
 import type { Route } from "./+types/root";
 import "./app.css";
 import { Header, Footer } from "./widgets";
+import { Loader } from "./shared/ui";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -48,9 +49,19 @@ export default function App() {
   return (
     <>
       <Header />
-      <Outlet />
+      <main className="relative px-20 py-12 flex flex-col gap-8">
+        <Outlet />
+      </main>
       <Footer />
     </>
+  );
+}
+
+export function HydrateFallback() {
+  return (
+    <div className="absolute inset-0 flex justify-center items-center">
+      <Loader />
+    </div>
   );
 }
 

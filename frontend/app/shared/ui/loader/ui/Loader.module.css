@@ -1,0 +1,35 @@
+.barLoader {
+    width: 220px;
+    height: 8px;
+    background: rgba(255, 140, 0, 0.15);
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+}
+
+.barLoader::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 40%;
+    background: linear-gradient(90deg, #ff6d00, #ff9800, #ffcc80);
+    border-radius: 10px;
+    animation: slide 1.4s ease-in-out infinite;
+    box-shadow:
+        0 0 15px #ff8c00,
+        0 0 30px rgba(255, 140, 0, 0.6);
+}
+
+@keyframes slide {
+    0% {
+        left: -40%;
+    }
+    50% {
+        left: 60%;
+    }
+    100% {
+        left: 100%;
+    }
+}
