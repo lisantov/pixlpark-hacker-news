@@ -9,8 +9,8 @@ import {
 
 import type { Route } from "./+types/root";
 import "./app.css";
-import { Header, Footer } from "./widgets";
 import { Loader } from "./shared/ui";
+import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -46,14 +46,21 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        staleTime: 1000 * 60,
+        refetchOnWindowFocus: true,
+        refetchOnReconnect: true,
+        retry: 3,
+      },
+    },
+  });
+
   return (
-    <>
-      <Header />
-      <main className="relative px-20 py-12 flex flex-col gap-8">
-        <Outlet />
-      </main>
-      <Footer />
-    </>
+    <QueryClientProvider client={queryClient}>
+      <Outlet />
+    </QueryClientProvider>
   );
 }
 
