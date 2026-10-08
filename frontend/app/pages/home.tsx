@@ -9,5 +9,9 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Home() {
-  return <StoryList />;
+  return (
+    <section className="flex flex-col gap-4">
+      <StoryList />
+    </section>
+  );
 }

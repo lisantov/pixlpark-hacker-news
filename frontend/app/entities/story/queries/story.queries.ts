@@ -1,99 +1,80 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { STORY_QUERY_KEYS } from "./story.keys";
 import { storyService } from "../api";
-import type { Story } from "../model";
+
+const PAGE_SIZE = 10;
+const createInfiniteQuery = (ids: number[], idsQuerySuccess: boolean) =>
+  useInfiniteQuery({
+    queryKey: STORY_QUERY_KEYS.newInfinite(),
+    queryFn: async ({ pageParam }) => {
+      const sliceIds = ids.slice(pageParam, pageParam + PAGE_SIZE);
+      return Promise.all(sliceIds.map((id) => storyService.storyById(id)));
+    },
+    initialPageParam: 0,
+    getNextPageParam: (_lastPage, _allPages, lastPageParam) => {
+      const next = lastPageParam + PAGE_SIZE;
+      return next < ids.length ? next : undefined;
+    },
+    enabled: idsQuerySuccess && ids.length > 0,
+    staleTime: 60_000,
+  });
 
 export const getNewStories = () => {
-  const queryClient = useQueryClient();
-
-  return useQuery({
+  const idsQuery = useQuery({
     queryKey: STORY_QUERY_KEYS.new(),
-    queryFn: async () => {
-      const ids = await storyService.newStories();
-
-      const cached = ids.map((id) =>
-        queryClient.getQueryData<Story>(STORY_QUERY_KEYS.detail(id)),
-      );
-
-      const missingIds = ids.filter((_, i) => !cached[i]);
-      const fetched = await Promise.all(
-        missingIds.map((id) => storyService.storyById(id)),
-      );
-
-      missingIds.forEach((id, i) => {
-        queryClient.setQueryData(STORY_QUERY_KEYS.detail(id), fetched[i]);
-      });
-
-      const byIdMap = new Map<number, Story>();
-      cached.forEach((story) => story && byIdMap.set(story.id, story));
-      fetched.forEach((story) => story && byIdMap.set(story.id, story));
-      return ids.map((id) => byIdMap.get(id)!).filter(Boolean);
-    },
+    queryFn: storyService.newStories,
     staleTime: 60_000,
-    refetchOnWindowFocus: true,
   });
+
+  const ids = idsQuery.data ?? [];
+
+  const newStoriesQuery = createInfiniteQuery(ids, idsQuery.isSuccess);
+
+  return {
+    idsQuery,
+    newStoriesQuery,
+    news: newStoriesQuery.data?.pages.flat() ?? [],
+  };
 };
 
 export const getTopStories = () => {
-  const queryClient = useQueryClient();
-
-  return useQuery({
+  const idsQuery = useQuery({
     queryKey: STORY_QUERY_KEYS.top(),
-    queryFn: async () => {
-      const ids = await storyService.topStories();
-
-      const cached = ids.map((id) =>
-        queryClient.getQueryData<Story>(STORY_QUERY_KEYS.detail(id)),
-      );
-
-      const missingIds = ids.filter((_, i) => !cached[i]);
-      const fetched = await Promise.all(
-        missingIds.map((id) => storyService.storyById(id)),
-      );
-
-      missingIds.forEach((id, i) => {
-        queryClient.setQueryData(STORY_QUERY_KEYS.detail(id), fetched[i]);
-      });
-
-      const byIdMap = new Map<number, Story>();
-      cached.forEach((story) => story && byIdMap.set(story.id, story));
-      fetched.forEach((story) => story && byIdMap.set(story.id, story));
-      return ids.map((id) => byIdMap.get(id)!).filter(Boolean);
-    },
+    queryFn: storyService.topStories,
     staleTime: 60_000,
-    refetchOnWindowFocus: true,
   });
+
+  const ids = idsQuery.data ?? [];
+
+  const topStoriesQuery = createInfiniteQuery(ids, idsQuery.isSuccess);
+
+  return {
+    idsQuery,
+    topStoriesQuery,
+    news: topStoriesQuery.data?.pages.flat() ?? [],
+  };
 };
 
 export const getBestStories = () => {
-  const queryClient = useQueryClient();
-
-  return useQuery({
-    queryKey: STORY_QUERY_KEYS.top(),
-    queryFn: async () => {
-      const ids = await storyService.bestStories();
-
-      const cached = ids.map((id) =>
-        queryClient.getQueryData<Story>(STORY_QUERY_KEYS.detail(id)),
-      );
-
-      const missingIds = ids.filter((_, i) => !cached[i]);
-      const fetched = await Promise.all(
-        missingIds.map((id) => storyService.storyById(id)),
-      );
-
-      missingIds.forEach((id, i) => {
-        queryClient.setQueryData(STORY_QUERY_KEYS.detail(id), fetched[i]);
-      });
-
-      const byIdMap = new Map<number, Story>();
-      cached.forEach((story) => story && byIdMap.set(story.id, story));
-      fetched.forEach((story) => story && byIdMap.set(story.id, story));
-      return ids.map((id) => byIdMap.get(id)!).filter(Boolean);
-    },
+  const idsQuery = useQuery({
+    queryKey: STORY_QUERY_KEYS.best(),
+    queryFn: storyService.bestStories,
     staleTime: 60_000,
-    refetchOnWindowFocus: true,
   });
+
+  const ids = idsQuery.data ?? [];
+
+  const bestStoriesQuery = createInfiniteQuery(ids, idsQuery.isSuccess);
+
+  return {
+    idsQuery,
+    bestStoriesQuery,
+    news: bestStoriesQuery.data?.pages.flat() ?? [],
+  };
 };
 
 export const getStoryById = (id: number) =>
