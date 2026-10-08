@@ -1,1 +1,1 @@
-export { default as StoryList } from "./StoryList.tsx";
+export { default as StoryList } from "./StoryList";
