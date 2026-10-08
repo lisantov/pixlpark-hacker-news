@@ -3,7 +3,7 @@ import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "vite";
 
 export default defineConfig({
-  base: "/pixlpark-hacker-news/",
+  base: process.env.NODE_ENV === "production" ? "/pixlpark-hacker-news/" : "/",
   plugins: [tailwindcss(), reactRouter()],
   resolve: {
     tsconfigPaths: true,

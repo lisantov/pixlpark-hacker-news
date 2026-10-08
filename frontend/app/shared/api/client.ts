@@ -1,4 +1,6 @@
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL ??
+  "https://hacker-news.firebaseio.com/v0/";
 const DEFAULT_HEADERS = {
   Accept: "applicantion/json",
   ContentType: "applicantion/json",
