@@ -18,7 +18,7 @@ export default function StoryList() {
   return (
     <>
       {!news.length
-        ? Array.from({ length: 10 }, (_, i) => <StoryItemSkeleton />)
+        ? Array.from({ length: 10 }, (_, i) => <StoryItemSkeleton key={i} />)
         : news.map((s, i) => <StoryItem key={s.id} story={s} />)}
       <div ref={ref} className="h-px"></div>
       {isFetchingNextPage && <Loader />}

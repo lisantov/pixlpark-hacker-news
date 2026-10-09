@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { getIconPath } from "~/shared/lib/assets";
 import { Link } from "~/shared/ui";
 
 export default function Header(): ReactNode {
@@ -8,8 +9,8 @@ export default function Header(): ReactNode {
         <h1 className="text-3xl text-black flex items-center gap-4 font-medium">
           <img
             className="w-12 aspect-square"
-            src="/icons/logo.svg"
-            alt="Hacker News Logo"
+            src={getIconPath("logo")}
+            alt="Логотип Hacker News"
           />
           Hacker news
         </h1>
