@@ -1,9 +1,10 @@
-import { type ButtonHTMLAttributes } from "react";
+import { type ButtonHTMLAttributes, type MouseEvent } from "react";
 
 export type ButtonVariant = "primary" | "secondary" | "outline" | "ghost";
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
+  onClick: () => void;
 }
 
 const baseClasses = [
@@ -28,6 +29,7 @@ const variantClasses: Record<ButtonVariant, string> = {
 
 export default function Button({
   children,
+  onClick = () => 0,
   variant = "primary",
   className = "",
   ...rest
@@ -36,8 +38,13 @@ export default function Button({
     .filter(Boolean)
     .join(" ");
 
+  const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    onClick();
+  };
+
   return (
-    <button className={classes} {...rest}>
+    <button className={classes} {...rest} onClick={handleClick}>
       {children}
     </button>
   );
