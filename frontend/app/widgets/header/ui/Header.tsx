@@ -4,7 +4,7 @@ import { Link } from "~/shared/ui";
 
 export default function Header(): ReactNode {
   return (
-    <header className="w-full flex justify-center items-center px-20 py-4 sticky top-0 bg-white shadow-lg z-100">
+    <header className="w-full flex justify-between items-center px-20 py-4 sticky top-0 bg-white shadow-lg z-100">
       <Link href="/">
         <h1 className="text-3xl text-black flex items-center gap-4 font-medium">
           <img
@@ -15,6 +15,10 @@ export default function Header(): ReactNode {
           Hacker news
         </h1>
       </Link>
+      <p className="flex itemss-center gap-1 text-gray-400">
+        Developed by
+        <Link href="https://github.com/lisantov">@lisantov</Link>
+      </p>
     </header>
   );
 }

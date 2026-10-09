@@ -111,16 +111,23 @@ const useStoryFeed = (
     news,
     newPostsCount,
     applyNewPosts,
+    isApplying,
   };
 };
 
 export const getNewStories = () => {
-  const { idsQuery, storiesQuery, news, newPostsCount, applyNewPosts } =
-    useStoryFeed(
-      STORY_QUERY_KEYS.new(),
-      STORY_QUERY_KEYS.newInfinite(),
-      storyService.newStories,
-    );
+  const {
+    idsQuery,
+    storiesQuery,
+    news,
+    newPostsCount,
+    applyNewPosts,
+    isApplying,
+  } = useStoryFeed(
+    STORY_QUERY_KEYS.new(),
+    STORY_QUERY_KEYS.newInfinite(),
+    storyService.newStories,
+  );
 
   return {
     idsQuery,
@@ -128,16 +135,23 @@ export const getNewStories = () => {
     news,
     newPostsCount,
     applyNewPosts,
+    isApplying,
   };
 };
 
 export const getTopStories = () => {
-  const { idsQuery, storiesQuery, news, newPostsCount, applyNewPosts } =
-    useStoryFeed(
-      STORY_QUERY_KEYS.top(),
-      STORY_QUERY_KEYS.topInfinite(),
-      storyService.topStories,
-    );
+  const {
+    idsQuery,
+    storiesQuery,
+    news,
+    newPostsCount,
+    applyNewPosts,
+    isApplying,
+  } = useStoryFeed(
+    STORY_QUERY_KEYS.top(),
+    STORY_QUERY_KEYS.topInfinite(),
+    storyService.topStories,
+  );
 
   return {
     idsQuery,
@@ -145,16 +159,23 @@ export const getTopStories = () => {
     news,
     newPostsCount,
     applyNewPosts,
+    isApplying,
   };
 };
 
 export const getBestStories = () => {
-  const { idsQuery, storiesQuery, news, newPostsCount, applyNewPosts } =
-    useStoryFeed(
-      STORY_QUERY_KEYS.best(),
-      STORY_QUERY_KEYS.bestInfinite(),
-      storyService.bestStories,
-    );
+  const {
+    idsQuery,
+    storiesQuery,
+    news,
+    newPostsCount,
+    applyNewPosts,
+    isApplying,
+  } = useStoryFeed(
+    STORY_QUERY_KEYS.best(),
+    STORY_QUERY_KEYS.bestInfinite(),
+    storyService.bestStories,
+  );
 
   return {
     idsQuery,
@@ -162,6 +183,7 @@ export const getBestStories = () => {
     news,
     newPostsCount,
     applyNewPosts,
+    isApplying,
   };
 };
 

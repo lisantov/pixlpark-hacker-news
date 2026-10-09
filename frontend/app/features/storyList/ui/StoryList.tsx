@@ -7,7 +7,7 @@ import { Loader } from "~/shared/ui";
 import { Button } from "~/shared/ui/button";
 
 export default function StoryList() {
-  const { newStoriesQuery, news, newPostsCount, applyNewPosts } =
+  const { newStoriesQuery, news, newPostsCount, applyNewPosts, isApplying } =
     getNewStories();
   const { fetchNextPage, hasNextPage, isFetchingNextPage } = newStoriesQuery;
 
@@ -27,18 +27,22 @@ export default function StoryList() {
 
   return (
     <>
-      <div className="fixed left-0 right-0 flex items-center justify-center">
+      {isApplying && <Loader />}
+      {!news.length
+        ? Array.from({ length: 10 }, (_, i) => <StoryItemSkeleton key={i} />)
+        : news.map((s, i) => <StoryItem key={s.id} story={s} index={i} />)}
+      <div ref={ref} className="h-px"></div>
+      {isFetchingNextPage && <Loader />}
+      <div className="fixed bottom-12 left-0 right-0 flex items-center px-20 justify-center animate-pulse">
         {newPostsCount > 0 && (
-          <Button onClick={handleNewPostsClick}>
+          <Button
+            onClick={handleNewPostsClick}
+            className="shadow-[0_0_48px] shadow-orange-400"
+          >
             Показать новые посты (+{newPostsCount})
           </Button>
         )}
       </div>
-      {!news.length
-        ? Array.from({ length: 10 }, (_, i) => <StoryItemSkeleton key={i} />)
-        : news.map((s, i) => <StoryItem key={s.id} story={s} />)}
-      <div ref={ref} className="h-px"></div>
-      {isFetchingNextPage && <Loader />}
     </>
   );
 }

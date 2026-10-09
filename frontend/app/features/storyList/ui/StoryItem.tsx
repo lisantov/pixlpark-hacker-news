@@ -1,17 +1,25 @@
+import { ViewTransition } from "react";
 import type { Story } from "~/entities/story";
 import { dateToTimeAgo } from "~/shared/lib";
 import { getIconPath } from "~/shared/lib/assets";
 import { Button } from "~/shared/ui/button";
+import styles from "./StoryItem.module.css";
 
 interface StoryItemProps {
   story: Story;
+  index?: number;
 }
 
-export default function StoryItem({ story }: StoryItemProps) {
+export default function StoryItem({ story, index = 0 }: StoryItemProps) {
   const commentsCount = story.kids?.length ?? 0;
 
   return (
-    <article className="group w-full p-5 flex flex-col gap-4 bg-white rounded-2xl border border-gray-100 transition-all duration-200 ease-out hover:border-orange-200 hover:shadow-lg hover:shadow-orange-200">
+    <article
+      className={`opacity-0 group w-full p-5 flex flex-col gap-4 bg-white rounded-2xl border border-gray-100 transition-all duration-200 ease-out hover:border-orange-200 hover:shadow-lg hover:shadow-orange-200 ${styles.slideUp}`}
+      style={{
+        animationDelay: `${100 * index}ms`,
+      }}
+    >
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1 flex flex-col gap-1.5">
           <h2 className="text-lg font-semibold text-gray-900 transition-colors duration-200 group-hover:text-orange-600">
