@@ -1,13 +1,17 @@
-import { Outlet } from "react-router";
+import type { ReactNode } from "react";
 import { Footer } from "~/widgets/footer";
 import { Header } from "~/widgets/header";
 
-export default function DefaultLayout() {
+interface DefaultLayoutProps {
+  children?: ReactNode;
+}
+
+export default function DefaultLayout({ children }: DefaultLayoutProps) {
   return (
     <>
       <Header />
       <main className="relative px-20 py-12 flex flex-col gap-8">
-        <Outlet />
+        {children}
       </main>
       <Footer />
     </>

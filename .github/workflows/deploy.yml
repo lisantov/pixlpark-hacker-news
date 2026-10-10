@@ -42,8 +42,8 @@ jobs:
 
       - name: Prepare SPA routing for GitHub Pages
         run: |
-          touch build/client/.nojekyll
-          cp build/client/index.html build/client/404.html
+          touch dist/.nojekyll
+          cp dist/index.html dist/404.html
 
       - uses: actions/configure-pages@v4
         with:
@@ -51,7 +51,7 @@ jobs:
 
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: frontend/build/client
+          path: frontend/dist
 
   deploy:
     needs: build

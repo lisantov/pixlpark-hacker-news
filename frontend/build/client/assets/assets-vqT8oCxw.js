@@ -1,0 +1,1 @@
+var e=e=>`/pixlpark-hacker-news/icons/${e}.svg`;export{e as t};
