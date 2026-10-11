@@ -7,8 +7,15 @@ import { Loader } from "~/shared/ui";
 import { Button } from "~/shared/ui/button";
 
 export default function StoryList() {
-  const { newStoriesQuery, news, newPostsCount, applyNewPosts, isApplying } =
-    getNewStories();
+  const {
+    newStoriesQuery,
+    news,
+    newPostsCount,
+    refresh,
+    isRefreshing,
+    applyNewPosts,
+    isApplying,
+  } = getNewStories();
   const { fetchNextPage, hasNextPage, isFetchingNextPage } = newStoriesQuery;
 
   const { ref, inView } = useInView({ threshold: 0.1, rootMargin: "200px" });
@@ -28,13 +35,18 @@ export default function StoryList() {
   return (
     <>
       {isApplying && <Loader />}
+      <div className="flex items-center justify-end">
+        <Button onClick={refresh} variant="outline" disabled={isRefreshing}>
+          {isRefreshing ? "Обновляем..." : "Обновить"}
+        </Button>
+      </div>
       {!news.length
         ? Array.from({ length: 10 }, (_, i) => <StoryItemSkeleton key={i} />)
         : news.map((s, i) => <StoryItem key={s.id} story={s} index={i} />)}
       <div ref={ref} className="h-px"></div>
       {isFetchingNextPage && <Loader />}
       <div className="fixed bottom-12 left-0 right-0 flex items-center px-20 justify-center animate-pulse">
-        {newPostsCount > 0 && (
+        {newPostsCount > 0 && !isRefreshing && (
           <Button
             onClick={handleNewPostsClick}
             className="shadow-[0_0_48px] shadow-orange-400"

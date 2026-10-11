@@ -20,6 +20,8 @@ const useStoryFeed = (
   const queryClient = useQueryClient();
   // Подтягиваются ли сейчас новые посты
   const [isApplying, setIsApplying] = useState(false);
+  // Выполняется ли сейчас ручное обновление
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   // ID отрендеренных постов на странице (те по которым уже были запрошены детали)
   const renderedIdsRef = useRef<number[]>([]);
@@ -33,7 +35,7 @@ const useStoryFeed = (
 
   const latestIds = idsQuery.data ?? [];
 
-  // Самые первые айдишники сохраняем в рендеренные
+  // Самые первый ответ по айдишникам сохраняем в рендеренные
   if (
     idsQuery.isSuccess &&
     renderedIdsRef.current.length === 0 &&
@@ -65,12 +67,65 @@ const useStoryFeed = (
   const topRenderedId = renderedIdsRef.current[0];
   let newPostsCount = 0;
 
-  // Проверка во избежании тригерра новых постов в первый раз
+  // Проверка во избежании тригерра уведомлений о новых постах в первый раз
   if (topRenderedId !== undefined && latestIds.length > 0) {
     const firstOldIndex = latestIds.indexOf(topRenderedId);
     if (firstOldIndex > 0) newPostsCount = firstOldIndex;
     else if (firstOldIndex === -1) newPostsCount = latestIds.length;
   }
+
+  // Ручное обновление: повторный запрос айдишников и автоматическая дозагрузка новых постов
+  const refresh = async () => {
+    if (isRefreshing) return;
+
+    setIsRefreshing(true);
+    try {
+      const result = await idsQuery.refetch();
+      const freshIds = result.data ?? latestIds;
+
+      const topRenderedId = renderedIdsRef.current[0];
+
+      if (topRenderedId === undefined) {
+        if (freshIds.length > 0) renderedIdsRef.current = freshIds;
+        return;
+      }
+
+      const firstOldIndex = freshIds.indexOf(topRenderedId);
+      const newCount =
+        firstOldIndex > 0
+          ? firstOldIndex
+          : firstOldIndex === -1
+            ? freshIds.length
+            : 0;
+
+      if (newCount > 0) {
+        const newIdsToFetch = freshIds.slice(0, newCount);
+
+        const newStories = await Promise.all(
+          newIdsToFetch.map((id) => storyService.storyById(id)),
+        );
+
+        // Подкидываем в query-память с постами новые посты в самое начало
+        queryClient.setQueryData(
+          infiniteKey,
+          (oldData: { pages: Story[][]; pageParams: number[] } | undefined) => {
+            if (!oldData || oldData.pages.length === 0) return oldData;
+
+            const updatedPages = [...newStories, ...oldData.pages];
+
+            return {
+              ...oldData,
+              pages: updatedPages,
+            };
+          },
+        );
+
+        renderedIdsRef.current = freshIds;
+      }
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
 
   // Запрос только новых постов
   const applyNewPosts = async () => {
@@ -110,6 +165,8 @@ const useStoryFeed = (
     storiesQuery,
     news,
     newPostsCount,
+    refresh,
+    isRefreshing,
     applyNewPosts,
     isApplying,
   };
@@ -121,6 +178,8 @@ export const getNewStories = () => {
     storiesQuery,
     news,
     newPostsCount,
+    refresh,
+    isRefreshing,
     applyNewPosts,
     isApplying,
   } = useStoryFeed(
@@ -134,6 +193,8 @@ export const getNewStories = () => {
     newStoriesQuery: storiesQuery,
     news,
     newPostsCount,
+    refresh,
+    isRefreshing,
     applyNewPosts,
     isApplying,
   };
@@ -145,6 +206,8 @@ export const getTopStories = () => {
     storiesQuery,
     news,
     newPostsCount,
+    refresh,
+    isRefreshing,
     applyNewPosts,
     isApplying,
   } = useStoryFeed(
@@ -158,6 +221,8 @@ export const getTopStories = () => {
     topStoriesQuery: storiesQuery,
     news,
     newPostsCount,
+    refresh,
+    isRefreshing,
     applyNewPosts,
     isApplying,
   };
@@ -169,6 +234,8 @@ export const getBestStories = () => {
     storiesQuery,
     news,
     newPostsCount,
+    refresh,
+    isRefreshing,
     applyNewPosts,
     isApplying,
   } = useStoryFeed(
@@ -182,6 +249,8 @@ export const getBestStories = () => {
     bestStoriesQuery: storiesQuery,
     news,
     newPostsCount,
+    refresh,
+    isRefreshing,
     applyNewPosts,
     isApplying,
   };
