@@ -8,7 +8,7 @@ import { STORY_QUERY_KEYS } from "./story.keys";
 import { storyService } from "../api";
 import type { Story } from "../model";
 
-const PAGE_SIZE = 10;
+export const PAGE_SIZE = 10;
 const REFETCH_INTERVAL = 60_000;
 
 // Общая логика для пагинации + рефетче новых постов

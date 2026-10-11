@@ -1,4 +1,4 @@
-import { getNewStories, type Story } from "~/entities/story";
+import { getNewStories, PAGE_SIZE, type Story } from "~/entities/story";
 import StoryItemSkeleton from "./StoryItemSkeleton";
 import StoryItem from "./StoryItem";
 import { useInView } from "react-intersection-observer";
@@ -36,13 +36,15 @@ export default function StoryList() {
     <>
       {isApplying && <Loader />}
       <div className="flex items-center justify-end">
-        <Button onClick={refresh} variant="outline" disabled={isRefreshing}>
+        <Button onClick={refresh} variant="primary" disabled={isRefreshing}>
           {isRefreshing ? "Обновляем..." : "Обновить"}
         </Button>
       </div>
       {!news.length
         ? Array.from({ length: 10 }, (_, i) => <StoryItemSkeleton key={i} />)
-        : news.map((s, i) => <StoryItem key={s.id} story={s} index={i} />)}
+        : news.map((s, i) => (
+            <StoryItem key={s.id} story={s} index={i % PAGE_SIZE} />
+          ))}
       <div ref={ref} className="h-px"></div>
       {isFetchingNextPage && <Loader />}
       <div className="fixed bottom-12 left-0 right-0 flex items-center px-20 justify-center animate-pulse">
