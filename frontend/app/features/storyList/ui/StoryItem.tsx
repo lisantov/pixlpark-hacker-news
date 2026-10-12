@@ -5,6 +5,7 @@ import { getIconPath } from "~/shared/lib/assets";
 import { Button } from "~/shared/ui/button";
 import styles from "./StoryItem.module.css";
 import { NavLink } from "react-router-dom";
+import { Link } from "~/shared/ui";
 
 interface StoryItemProps {
   story: Story;
@@ -52,9 +53,9 @@ export default function StoryItem({ story, index = 0 }: StoryItemProps) {
           </span>
         </div>
 
-        <NavLink to={`/${story.id}`}>
+        <Link href={`/${story.id}`}>
           <Button variant="outline">Подробнее</Button>
-        </NavLink>
+        </Link>
       </div>
     </article>
   );
