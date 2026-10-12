@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import {
+  queryOptions,
   useInfiniteQuery,
   useQuery,
   useQueryClient,
@@ -7,9 +8,15 @@ import {
 import { STORY_QUERY_KEYS } from "./story.keys";
 import { storyService } from "../api";
 import type { Story } from "../model";
+import { REFETCH_INTERVAL, PAGE_SIZE } from "~/shared/lib";
 
-export const PAGE_SIZE = 10;
-const REFETCH_INTERVAL = 60_000;
+export const storyQueryOptions = (id: number) =>
+  queryOptions({
+    queryKey: STORY_QUERY_KEYS.detail(id),
+    queryFn: () => storyService.storyById(id),
+    staleTime: REFETCH_INTERVAL,
+    refetchOnWindowFocus: true,
+  });
 
 // Общая логика для пагинации + рефетче новых постов
 const useStoryFeed = (
@@ -18,9 +25,12 @@ const useStoryFeed = (
   fetchIds: () => Promise<number[]>,
 ) => {
   const queryClient = useQueryClient();
+
+  // Детали поста грузим через общий query-кэш (ключ detail(id)), чтобы страница новости получала их без повторного запроса
+  const fetchStory = (id: number) => queryClient.query(storyQueryOptions(id));
+
   // Подтягиваются ли сейчас новые посты
   const [isApplying, setIsApplying] = useState(false);
-  // Выполняется ли сейчас ручное обновление
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   // ID отрендеренных постов на странице (те по которым уже были запрошены детали)
@@ -49,7 +59,7 @@ const useStoryFeed = (
     queryFn: ({ pageParam = 0 }) => {
       const currentIds = renderedIdsRef.current;
       const pageIds = currentIds.slice(pageParam, pageParam + PAGE_SIZE);
-      return Promise.all(pageIds.map((id) => storyService.storyById(id)));
+      return Promise.all(pageIds.map((id) => fetchStory(id)));
     },
     initialPageParam: 0,
     getNextPageParam: (_lastPage, allPages) => {
@@ -102,7 +112,7 @@ const useStoryFeed = (
         const newIdsToFetch = freshIds.slice(0, newCount);
 
         const newStories = await Promise.all(
-          newIdsToFetch.map((id) => storyService.storyById(id)),
+          newIdsToFetch.map((id) => fetchStory(id)),
         );
 
         // Подкидываем в query-память с постами новые посты в самое начало
@@ -136,7 +146,7 @@ const useStoryFeed = (
       const newIdsToFetch = latestIds.slice(0, newPostsCount);
 
       const newStories = await Promise.all(
-        newIdsToFetch.map((id) => storyService.storyById(id)),
+        newIdsToFetch.map((id) => fetchStory(id)),
       );
 
       // Подкидываем в query-память с постами новые посты в самое начало
@@ -172,7 +182,7 @@ const useStoryFeed = (
   };
 };
 
-export const getNewStories = () => {
+export const useNewStories = () => {
   const {
     idsQuery,
     storiesQuery,
@@ -200,7 +210,7 @@ export const getNewStories = () => {
   };
 };
 
-export const getTopStories = () => {
+export const useTopStories = () => {
   const {
     idsQuery,
     storiesQuery,
@@ -228,7 +238,7 @@ export const getTopStories = () => {
   };
 };
 
-export const getBestStories = () => {
+export const useBestStories = () => {
   const {
     idsQuery,
     storiesQuery,
@@ -256,10 +266,4 @@ export const getBestStories = () => {
   };
 };
 
-export const getStoryById = (id: number) =>
-  useQuery({
-    queryKey: STORY_QUERY_KEYS.detail(id),
-    queryFn: () => storyService.storyById(id),
-    staleTime: REFETCH_INTERVAL,
-    refetchOnWindowFocus: true,
-  });
+export const useStoryById = (id: number) => useQuery(storyQueryOptions(id));

@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Link } from "~/shared/ui";
+import { Link } from "~/shared/ui/link";
 
 export default function Footer(): ReactNode {
   return (

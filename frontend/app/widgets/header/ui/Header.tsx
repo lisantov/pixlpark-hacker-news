@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { getIconPath } from "~/shared/lib/assets";
-import { Link } from "~/shared/ui";
+import { Link } from "~/shared/ui/link";
 
 export default function Header(): ReactNode {
   return (

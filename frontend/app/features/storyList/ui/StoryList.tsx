@@ -1,10 +1,11 @@
-import { getNewStories, PAGE_SIZE, type Story } from "~/entities/story";
+import { useNewStories, type Story } from "~/entities/story";
 import StoryItemSkeleton from "./StoryItemSkeleton";
 import StoryItem from "./StoryItem";
 import { useInView } from "react-intersection-observer";
 import { useEffect } from "react";
-import { Loader } from "~/shared/ui";
+import { Loader } from "~/shared/ui/loader";
 import { Button } from "~/shared/ui/button";
+import { PAGE_SIZE } from "~/shared/lib/constants";
 
 export default function StoryList() {
   const {
@@ -15,7 +16,7 @@ export default function StoryList() {
     isRefreshing,
     applyNewPosts,
     isApplying,
-  } = getNewStories();
+  } = useNewStories();
   const { fetchNextPage, hasNextPage, isFetchingNextPage } = newStoriesQuery;
 
   const { ref, inView } = useInView({ threshold: 0.1, rootMargin: "200px" });

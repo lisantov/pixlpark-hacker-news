@@ -4,6 +4,7 @@ import { dateToTimeAgo } from "~/shared/lib";
 import { getIconPath } from "~/shared/lib/assets";
 import { Button } from "~/shared/ui/button";
 import styles from "./StoryItem.module.css";
+import { NavLink } from "react-router-dom";
 
 interface StoryItemProps {
   story: Story;
@@ -51,7 +52,9 @@ export default function StoryItem({ story, index = 0 }: StoryItemProps) {
           </span>
         </div>
 
-        <Button variant="outline">Подробнее</Button>
+        <NavLink to={`/${story.id}`}>
+          <Button variant="outline">Подробнее</Button>
+        </NavLink>
       </div>
     </article>
   );

@@ -1,7 +1,8 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Route, Switch } from "react-router-dom";
-import Home from "~/pages/home";
-import NotFound from "~/pages/not-found";
+import StoryListPage from "~/pages/StoryListPage";
+import StoryDetailPage from "~/pages/StoryDetailPage";
+import NotFoundPage from "~/pages/NotFoundPage";
 import { DefaultLayout } from "~/widgets/layouts";
 
 export default function App() {
@@ -24,11 +25,20 @@ export default function App() {
           path="/"
           render={() => (
             <DefaultLayout>
-              <Home />
+              <StoryListPage />
             </DefaultLayout>
           )}
         />
-        <Route component={NotFound} />
+        <Route
+          exact
+          path="/:id"
+          render={() => (
+            <DefaultLayout>
+              <StoryDetailPage />
+            </DefaultLayout>
+          )}
+        />
+        <Route component={NotFoundPage} />
       </Switch>
     </QueryClientProvider>
   );

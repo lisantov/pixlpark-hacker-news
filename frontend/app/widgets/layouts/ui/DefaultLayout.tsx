@@ -10,7 +10,7 @@ export default function DefaultLayout({ children }: DefaultLayoutProps) {
   return (
     <>
       <Header />
-      <main className="relative px-20 py-12 flex flex-col gap-8">
+      <main className="relative px-20 py-12 flex flex-1 flex-col justify-start gap-8">
         {children}
       </main>
       <Footer />
