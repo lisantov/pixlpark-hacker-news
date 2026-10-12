@@ -53,7 +53,7 @@ export default function StoryCommentItem({
               variant="ghost"
               onClick={() => setIsNestedExpanded((old) => !old)}
             >
-              Показать ответы ({nestedCount})
+              {isNestedExpanded ? "Скрыть" : "Показать"} ответы ({nestedCount})
             </Button>
           </div>
         )}

@@ -1,6 +1,7 @@
 import { useCommentsGroup } from "~/entities/comment/queries";
 import StoryCommentItem from "./StoryCommentItem";
 import StoryCommentItemSkeleton from "./StoryCommentItemSkeleton";
+import { useEffect } from "react";
 
 interface StoryCommentListProps {
   ids?: number[];
@@ -11,8 +12,12 @@ export default function StoryCommentList({
   ids = [],
   layer = 0,
 }: StoryCommentListProps) {
-  const { data, isLoading, isError } = useCommentsGroup(ids);
+  const { data, isLoading, isError, refetch } = useCommentsGroup(ids);
   const comments = (data ?? []).filter((c) => !c.dead && !c.deleted);
+
+  useEffect(() => {
+    if (!isLoading) refetch();
+  }, [ids]);
 
   if (isLoading)
     return (

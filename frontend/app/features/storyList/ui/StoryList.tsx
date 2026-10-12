@@ -1,23 +1,28 @@
-import { useNewStories, type Story } from "~/entities/story";
+import { useStoriesByType, type StoryFeedType } from "~/entities/story";
 import StoryItemSkeleton from "./StoryItemSkeleton";
 import StoryItem from "./StoryItem";
 import { useInView } from "react-intersection-observer";
-import { useEffect } from "react";
+import { useEffect, type ReactNode } from "react";
 import { Loader } from "~/shared/ui/loader";
 import { Button } from "~/shared/ui/button";
 import { PAGE_SIZE } from "~/shared/lib/constants";
 
-export default function StoryList() {
+interface StoryListProps {
+  type?: StoryFeedType;
+  toolbar?: ReactNode;
+}
+
+export default function StoryList({ type = "new", toolbar }: StoryListProps) {
   const {
-    newStoriesQuery,
+    storiesQuery,
     news,
     newPostsCount,
     refresh,
     isRefreshing,
     applyNewPosts,
     isApplying,
-  } = useNewStories();
-  const { fetchNextPage, hasNextPage, isFetchingNextPage } = newStoriesQuery;
+  } = useStoriesByType(type);
+  const { fetchNextPage, hasNextPage, isFetchingNextPage } = storiesQuery;
 
   const { ref, inView } = useInView({ threshold: 0.1, rootMargin: "200px" });
 
@@ -36,8 +41,14 @@ export default function StoryList() {
   return (
     <>
       {isApplying && <Loader />}
-      <div className="flex items-center justify-end">
-        <Button onClick={refresh} variant="primary" disabled={isRefreshing}>
+      <div className="flex items-center gap-4">
+        {toolbar}
+        <Button
+          className="ml-auto"
+          onClick={refresh}
+          variant="primary"
+          disabled={isRefreshing}
+        >
           {isRefreshing ? "Обновляем..." : "Обновить"}
         </Button>
       </div>

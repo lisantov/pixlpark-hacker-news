@@ -18,6 +18,32 @@ export const storyQueryOptions = (id: number) =>
     refetchOnWindowFocus: true,
   });
 
+export type StoryFeedType = "new" | "top" | "best";
+
+interface StoryFeedConfig {
+  idsKey: () => readonly unknown[];
+  infiniteKey: () => readonly unknown[];
+  fetchIds: () => Promise<number[]>;
+}
+
+const STORY_FEEDS: Record<StoryFeedType, StoryFeedConfig> = {
+  new: {
+    idsKey: STORY_QUERY_KEYS.new,
+    infiniteKey: STORY_QUERY_KEYS.newInfinite,
+    fetchIds: storyService.newStories,
+  },
+  top: {
+    idsKey: STORY_QUERY_KEYS.top,
+    infiniteKey: STORY_QUERY_KEYS.topInfinite,
+    fetchIds: storyService.topStories,
+  },
+  best: {
+    idsKey: STORY_QUERY_KEYS.best,
+    infiniteKey: STORY_QUERY_KEYS.bestInfinite,
+    fetchIds: storyService.bestStories,
+  },
+};
+
 // Общая логика для пагинации + рефетче новых постов
 const useStoryFeed = (
   idsKey: readonly unknown[],
@@ -180,6 +206,11 @@ const useStoryFeed = (
     applyNewPosts,
     isApplying,
   };
+};
+
+export const useStoriesByType = (type: StoryFeedType) => {
+  const { idsKey, infiniteKey, fetchIds } = STORY_FEEDS[type];
+  return useStoryFeed(idsKey(), infiniteKey(), fetchIds);
 };
 
 export const useNewStories = () => {
