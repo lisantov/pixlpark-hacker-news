@@ -13,7 +13,7 @@ const externalLinkClassName =
 export default function Link({ href, className, children }: LinkProps) {
   if (href.startsWith("http"))
     return (
-      <a className={className ?? externalLinkClassName} href={href}>
+      <a className={`${externalLinkClassName} ${className}`} href={href}>
         {children}
       </a>
     );

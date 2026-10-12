@@ -5,7 +5,7 @@ import { Link } from "~/shared/ui/link";
 export default function Header(): ReactNode {
   return (
     <header className="w-full flex justify-between items-center px-20 py-4 sticky top-0 bg-white shadow-lg z-100">
-      <Link href="/">
+      <Link href="/" className="no-underline!">
         <h1 className="text-3xl text-black flex items-center gap-4 font-medium">
           <img
             className="w-12 aspect-square"

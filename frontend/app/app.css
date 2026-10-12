@@ -16,3 +16,25 @@ html {
     flex-direction: column;
     justify-content: space-between;
 }
+
+a {
+    color: var(--color-orange-600);
+    text-decoration: underline;
+}
+
+code {
+    font-family: monospace;
+    font-size: var(--text-xs);
+}
+
+pre {
+    overflow-x: auto;
+    white-space: prewrap;
+    border-radius: var(--radius-lg);
+    background-color: var(--color-gray-50);
+    padding: 12px;
+}
+
+pre:not(:last-child) {
+    margin-bottom: 12px;
+}
