@@ -5,6 +5,8 @@ SPA-клиент [Hacker News](https://news.ycombinator.com/) на React с бе
 Приложение живёт в папке [`frontend/`](./frontend) — это отдельный Vite-проект.
 Хотел сделать monorepo с бэкендом на Express, но к сожалению времени маловато
 
+[Задеплоенная версия](https://lisantov.github.io/pixlpark-hacker-news/)
+
 ## Возможности
 
 - Три ленты новостей: **new / top / best** — переключаются селектом на главной странице.
